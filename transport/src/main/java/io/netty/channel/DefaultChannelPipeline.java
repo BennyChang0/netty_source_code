@@ -94,11 +94,11 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         succeededFuture = new SucceededChannelFuture(channel, null);
         voidPromise =  new VoidChannelPromise(channel, true);
 
-        // channelPipeline 有一个ChannelHandlerContext的双向链表
+        // TODO channelPipeline 由两个 AbstractChannelHandlerContext 类型的实例构成 ChannelHandlerContext 的双向链表
         tail = new TailContext(this);
         head = new HeadContext(this);
 
-        // 形成环
+        // TODO 形成循环
         head.next = tail;
         tail.prev = head;
     }
@@ -209,9 +209,10 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         synchronized (this) {
             checkMultiplicity(handler);
 
-            // TODO 转换成 AbstractChannelHandlerContext 子类实例 DefaultChannelHandlerContext, 其中属性包含 handler
+            // TODO 转换成 AbstractChannelHandlerContext 子类的实例 DefaultChannelHandlerContext, 其中属性包含 handler
             newCtx = newContext(group, filterName(name, handler), handler);
 
+            // TODO 添加到handler链条尾部
             addLast0(newCtx);
 
             // If the registered is false it means that the channel was not registered on an eventloop yet.
@@ -239,7 +240,6 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         return this;
     }
 
-    // TODO 添加到handler尾部
     private void addLast0(AbstractChannelHandlerContext newCtx) {
         AbstractChannelHandlerContext prev = tail.prev;
         newCtx.prev = prev;
@@ -618,7 +618,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
             // We must call setAddComplete before calling handlerAdded. Otherwise if the handlerAdded method generates
             // any pipeline events ctx.handler() will miss them because the state will not allow it.
             ctx.setAddComplete();
-            // TODO handler()获取 DefaultChannelHandlerContext 属性 ChannelHandler 的实例 ChannelInitializer 的handlerAdded方法
+            // TODO handler()获取 DefaultChannelHandlerContext 属性 ChannelHandler 的实例 ChannelInitializer, 并且调用handlerAdded方法
             ctx.handler().handlerAdded(ctx);
         } catch (Throwable t) {
             boolean removed = false;
@@ -1252,7 +1252,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
     // A special catch-all handler that handles both bytes and messages.
     final class TailContext extends AbstractChannelHandlerContext implements ChannelInboundHandler {
 
-        // tail的为inbound
+        // TODO tail为inbound
         TailContext(DefaultChannelPipeline pipeline) {
             super(pipeline, null, TAIL_NAME, true, false);
             setAddComplete();
@@ -1316,7 +1316,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
 
         private final Unsafe unsafe;
 
-        // head为outbound
+        // TODO head为outbound
         HeadContext(DefaultChannelPipeline pipeline) {
             super(pipeline, null, HEAD_NAME, false, true);
             unsafe = pipeline.channel().unsafe();

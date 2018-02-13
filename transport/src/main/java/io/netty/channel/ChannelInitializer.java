@@ -76,9 +76,11 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
         if (initChannel(ctx)) {
             // we called initChannel(...) so we need to call now pipeline.fireChannelRegistered() to ensure we not
             // miss an event.
+            // TODO 如果channel还没有初始化，则从pipeline的head开始传递
             ctx.pipeline().fireChannelRegistered();
         } else {
             // Called initChannel(...) before which is the expected behavior, so just forward the event.
+            // TODO 如果channel已经初始化，则直接传递给下一个Inbound
             ctx.fireChannelRegistered();
         }
     }
@@ -97,6 +99,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
      */
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        // TODO 如果channel已经注册，即与 NioEventLoop 绑定关系
         if (ctx.channel().isRegistered()) {
             // This should always be true with our current DefaultChannelPipeline implementation.
             // The good thing about calling initChannel(...) in handlerAdded(...) is that there will be no ordering

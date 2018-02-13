@@ -335,7 +335,8 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
-        // 将 bossGroup 与 NioServerSocketChannel or NioSocketChannel 绑定
+        // TODO 将 bossGroup中的一个 NioEventLoop 与 NioServerSocketChannel 或者 NioSocketChannel 绑定关系
+        // TODO group()方法返回的是 NioEventLoopGroup.register()--> SingleThreadEventLoop.register()-->最终调用 AbstractUnsafe.register()
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {

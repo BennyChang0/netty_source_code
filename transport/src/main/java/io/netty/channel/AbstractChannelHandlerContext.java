@@ -111,6 +111,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
 
     @Override
     public EventExecutor executor() {
+        // TODO 如果ChannelHandlerContext还没有eventLoop则将channel的eventLoop绑定
         if (executor == null) {
             return channel().eventLoop();
         } else {
@@ -130,7 +131,6 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
     }
 
     static void invokeChannelRegistered(final AbstractChannelHandlerContext next) {
-        // TODO next --> head
         EventExecutor executor = next.executor();
         if (executor.inEventLoop()) {
             next.invokeChannelRegistered();
@@ -145,13 +145,16 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
     }
 
     private void invokeChannelRegistered() {
+        // TODO 如果 ChannelInitializer.handlerAdded() 已经被调用过
         if (invokeHandler()) {
             try {
+                // TODO ChannelInitializer.channelRegistered()
                 ((ChannelInboundHandler) handler()).channelRegistered(this);
             } catch (Throwable t) {
                 notifyHandlerException(t);
             }
         } else {
+            // TODO 不断找到下一个Inbound
             fireChannelRegistered();
         }
     }
