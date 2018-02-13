@@ -54,7 +54,9 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
      * @param executor          the Executor to use, or {@code null} if the default should be used.
      * @param args              arguments which will passed to each {@link #newChild(Executor, Object...)} call
      */
+    // TODO 初始化 MultithreadEventLoopGroup 时调用父类 MultithreadEventExecutorGroup 构造器
     protected MultithreadEventExecutorGroup(int nThreads, Executor executor, Object... args) {
+        // TODO 默认使用round-robin选择策略, AtomicInteger.getAndIncrement()
         this(nThreads, executor, DefaultEventExecutorChooserFactory.INSTANCE, args);
     }
 
@@ -72,15 +74,19 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
             throw new IllegalArgumentException(String.format("nThreads: %d (expected: > 0)", nThreads));
         }
 
+        // TODO 初始化 executor， ThreadFactory为 DefaultThreadFactory
         if (executor == null) {
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
 
+        // TODO 初始化一定数量的线程数组
         children = new EventExecutor[nThreads];
 
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {
+                // args=[SelectorProvider, SelectStrategyFactory, RejectedExecutionHandler]
+                // 实例化 NioEventLoop 对象
                 children[i] = newChild(executor, args);
                 success = true;
             } catch (Exception e) {
@@ -108,6 +114,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
             }
         }
 
+        // TODO 初始化线程选择策略器
         chooser = chooserFactory.newChooser(children);
 
         final FutureListener<Object> terminationListener = new FutureListener<Object>() {
@@ -119,6 +126,7 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
             }
         };
 
+        // TODO 为每一个线程设置监听器
         for (EventExecutor e: children) {
             e.terminationFuture().addListener(terminationListener);
         }

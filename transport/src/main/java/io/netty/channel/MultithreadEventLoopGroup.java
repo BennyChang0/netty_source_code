@@ -48,6 +48,7 @@ public abstract class MultithreadEventLoopGroup extends MultithreadEventExecutor
     /**
      * @see MultithreadEventExecutorGroup#MultithreadEventExecutorGroup(int, Executor, Object...)
      */
+    // Todo 创建NioEventLoopGroup时, 调用父类构造器创建, nThreads为0时，默认线程数是取值系统变量"io.netty.eventLoopThreads"或者是当前机器cpu数量的两倍
     protected MultithreadEventLoopGroup(int nThreads, Executor executor, Object... args) {
         super(nThreads == 0 ? DEFAULT_EVENT_LOOP_THREADS : nThreads, executor, args);
     }

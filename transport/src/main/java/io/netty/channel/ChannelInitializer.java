@@ -126,6 +126,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
     private void remove(ChannelHandlerContext ctx) {
         try {
             ChannelPipeline pipeline = ctx.pipeline();
+            // TODO 遍历pipeline的 ChannelHandlerContext 找到对应的context将其删除
             if (pipeline.context(this) != null) {
                 pipeline.remove(this);
             }

@@ -81,7 +81,9 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
     protected AbstractChannel(Channel parent) {
         this.parent = parent;
         id = newId();
+        // TODO NioServerSocketChannel.Unsafe
         unsafe = newUnsafe();
+        // TODO 每个channel初始化时都对应默认 DefaultChannelPipeline
         pipeline = newChannelPipeline();
     }
 
@@ -464,14 +466,17 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 promise.setFailure(new IllegalStateException("registered to an event loop already"));
                 return;
             }
+            // TODO 判断eventLoop是否为 NioEventLoop
             if (!isCompatible(eventLoop)) {
                 promise.setFailure(
                         new IllegalStateException("incompatible event loop type: " + eventLoop.getClass().getName()));
                 return;
             }
 
+            // TODO 将channel与eventLoop绑定
             AbstractChannel.this.eventLoop = eventLoop;
 
+            // TODO SingleThreadEventExecutor.inEventLoop(Thread thread)
             if (eventLoop.inEventLoop()) {
                 register0(promise);
             } else {
@@ -501,6 +506,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
+                // TODO AbstractNioChannel.doRegister
                 doRegister();
                 neverRegistered = false;
                 registered = true;
@@ -510,6 +516,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 pipeline.invokeHandlerAddedIfNeeded();
 
                 safeSetSuccess(promise);
+                // TODO
                 pipeline.fireChannelRegistered();
                 // Only fire a channelActive if the channel has never been registered. This prevents firing
                 // multiple channel actives if the channel is deregistered and re-registered.

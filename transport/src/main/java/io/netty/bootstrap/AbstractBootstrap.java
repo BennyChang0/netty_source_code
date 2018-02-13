@@ -100,6 +100,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
      * {@link Channel} implementation has no no-args constructor.
      */
     public B channel(Class<? extends C> channelClass) {
+        // channelClass (server=NioServerSocketChannel, client=NioSocketChannel)
         if (channelClass == null) {
             throw new NullPointerException("channelClass");
         }
@@ -256,6 +257,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     /**
      * Create a new {@link Channel} and bind it.
      */
+    // TODO 根据host和port创建一个Channel并且绑定
     public ChannelFuture bind(String inetHost, int inetPort) {
         return bind(SocketUtils.socketAddress(inetHost, inetPort));
     }
@@ -279,6 +281,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
+        // TODO 初始化Channel并且将其与Group绑定
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -317,7 +320,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            // TODO 反射调用构造器创建 NioServerSocketChannel or NioSocketChannel 对象实例
             channel = channelFactory.newChannel();
+            // TODO 初始化Channel子类 Bootstrap 或者 ServerBootStrap
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -330,6 +335,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        // 将 bossGroup 与 NioServerSocketChannel or NioSocketChannel 绑定
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {

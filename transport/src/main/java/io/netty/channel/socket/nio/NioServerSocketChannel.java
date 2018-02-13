@@ -83,7 +83,9 @@ public class NioServerSocketChannel extends AbstractNioMessageChannel
      * Create a new instance using the given {@link ServerSocketChannel}.
      */
     public NioServerSocketChannel(ServerSocketChannel channel) {
+        // TODO 调用父类构造方法，并且设置 key=accept
         super(null, channel, SelectionKey.OP_ACCEPT);
+        // TODO config 包含 NioServerSocketChannel and ServerSocketChannelImpl
         config = new NioServerSocketChannelConfig(this, javaChannel().socket());
     }
 

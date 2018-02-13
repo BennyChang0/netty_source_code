@@ -44,10 +44,14 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
 
     private static final InternalLogger logger = InternalLoggerFactory.getInstance(ServerBootstrap.class);
 
+    // TODO 子channel的options
     private final Map<ChannelOption<?>, Object> childOptions = new LinkedHashMap<ChannelOption<?>, Object>();
     private final Map<AttributeKey<?>, Object> childAttrs = new LinkedHashMap<AttributeKey<?>, Object>();
+    // TODO 初始化config，并且将当前 ServerBootstrap 对象传递
     private final ServerBootstrapConfig config = new ServerBootstrapConfig(this);
+    // TODO work线程组
     private volatile EventLoopGroup childGroup;
+    // TODO 子channel的handler
     private volatile ChannelHandler childHandler;
 
     public ServerBootstrap() { }
@@ -78,6 +82,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
      * {@link Channel}'s.
      */
     public ServerBootstrap group(EventLoopGroup parentGroup, EventLoopGroup childGroup) {
+        // 设置bossGroup
         super.group(parentGroup);
         if (childGroup == null) {
             throw new NullPointerException("childGroup");
@@ -98,6 +103,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         if (childOption == null) {
             throw new NullPointerException("childOption");
         }
+        // 删除value为null的option
         if (value == null) {
             synchronized (childOptions) {
                 childOptions.remove(childOption);
@@ -118,6 +124,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         if (childKey == null) {
             throw new NullPointerException("childKey");
         }
+        // 删除value为null的子属性key
         if (value == null) {
             childAttrs.remove(childKey);
         } else {
@@ -153,6 +160,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             }
         }
 
+        // TODO 获取Channel的 ChannelPipeline 对象
         ChannelPipeline p = channel.pipeline();
 
         final EventLoopGroup currentChildGroup = childGroup;
@@ -170,6 +178,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             @Override
             public void initChannel(final Channel ch) throws Exception {
                 final ChannelPipeline pipeline = ch.pipeline();
+                // TODO  ServerBootstrap 的 handler
                 ChannelHandler handler = config.handler();
                 if (handler != null) {
                     pipeline.addLast(handler);
@@ -178,6 +187,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
                 ch.eventLoop().execute(new Runnable() {
                     @Override
                     public void run() {
+                        // TODO 将 ServerBootstrapAcceptor 添加到pipeline的tail
                         pipeline.addLast(new ServerBootstrapAcceptor(
                                 ch, currentChildGroup, currentChildHandler, currentChildOptions, currentChildAttrs));
                     }
@@ -252,6 +262,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             }
 
             try {
+                // TODO 将workGroup中的某个EventLoop与NioSocketChannel关联, 实际是调用 AbstractChannel.register()方法
                 childGroup.register(child).addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(ChannelFuture future) throws Exception {
