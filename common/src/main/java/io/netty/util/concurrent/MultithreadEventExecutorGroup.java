@@ -85,8 +85,8 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {
-                // args=[SelectorProvider, SelectStrategyFactory, RejectedExecutionHandler]
-                // 实例化 NioEventLoop 对象
+                // TODO args=[SelectorProvider, SelectStrategyFactory, RejectedExecutionHandler]
+                // TODO 实例化 NioEventLoop 对象
                 children[i] = newChild(executor, args);
                 success = true;
             } catch (Exception e) {

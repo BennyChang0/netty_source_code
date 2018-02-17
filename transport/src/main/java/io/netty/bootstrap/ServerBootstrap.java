@@ -103,7 +103,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         if (childOption == null) {
             throw new NullPointerException("childOption");
         }
-        // 删除value为null的option
+        // TODO 删除value为null的option
         if (value == null) {
             synchronized (childOptions) {
                 childOptions.remove(childOption);

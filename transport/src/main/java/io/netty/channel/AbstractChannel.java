@@ -81,7 +81,6 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
     protected AbstractChannel(Channel parent) {
         this.parent = parent;
         id = newId();
-        // TODO NioServerSocketChannel.Unsafe
         unsafe = newUnsafe();
         // TODO 每个channel初始化时都有一个默认的 DefaultChannelPipeline
         pipeline = newChannelPipeline();

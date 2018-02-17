@@ -110,7 +110,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
      * Connect a {@link Channel} to the remote peer.
      */
     public ChannelFuture connect() {
-        // 属性校验 group, channelFactory, handler不为空
+        // TODO 属性校验 group, channelFactory, handler不为空
         validate();
         SocketAddress remoteAddress = this.remoteAddress;
         if (remoteAddress == null) {
@@ -161,6 +161,7 @@ public class Bootstrap extends AbstractBootstrap<Bootstrap, Channel> {
      * @see #connect()
      */
     private ChannelFuture doResolveAndConnect(final SocketAddress remoteAddress, final SocketAddress localAddress) {
+        // TODO 创建 NioSocketChannel 实例并且初始化
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
 

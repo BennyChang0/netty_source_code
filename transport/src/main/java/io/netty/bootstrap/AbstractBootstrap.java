@@ -100,7 +100,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
      * {@link Channel} implementation has no no-args constructor.
      */
     public B channel(Class<? extends C> channelClass) {
-        // channelClass (server=NioServerSocketChannel, client=NioSocketChannel)
+        // TODO channelClass (server=NioServerSocketChannel, client=NioSocketChannel)
         if (channelClass == null) {
             throw new NullPointerException("channelClass");
         }
@@ -281,7 +281,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
-        // TODO 初始化Channel并且将其与Group绑定
+        // TODO 创建及初始化Channel,并且将其与Group绑定
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -320,7 +320,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
-            // TODO 反射调用构造器创建 NioServerSocketChannel or NioSocketChannel 对象实例
+            // TODO ReflectiveChannelFactory 创建 NioServerSocketChannel or NioSocketChannel 对象实例
             channel = channelFactory.newChannel();
             // TODO 初始化Channel子类 Bootstrap 或者 ServerBootStrap
             init(channel);
