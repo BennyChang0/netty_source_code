@@ -94,7 +94,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         succeededFuture = new SucceededChannelFuture(channel, null);
         voidPromise =  new VoidChannelPromise(channel, true);
 
-        // TODO channelPipeline 由两个 AbstractChannelHandlerContext 类型实例 ChannelHandlerContext 构成的双向循环链表
+        // TODO channelPipeline 由两个 AbstractChannelHandlerContext 类型实例 ChannelHandlerContext 的双向链表
         tail = new TailContext(this);
         head = new HeadContext(this);
 

@@ -119,7 +119,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
                 // We do so to prevent multiple calls to initChannel(...).
                 exceptionCaught(ctx, cause);
             } finally {
-                // TODO 删除
+                // TODO 删除初始化时配置的handler, 通过handler() or childHandler()方法设置
                 remove(ctx);
             }
             return true;
