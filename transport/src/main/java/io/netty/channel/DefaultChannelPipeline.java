@@ -94,7 +94,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         succeededFuture = new SucceededChannelFuture(channel, null);
         voidPromise =  new VoidChannelPromise(channel, true);
 
-        // TODO channelPipeline 由两个 AbstractChannelHandlerContext 类型的实例构成 ChannelHandlerContext 的双向链表
+        // TODO channelPipeline 由两个 AbstractChannelHandlerContext 类型实例 ChannelHandlerContext 构成的双向循环链表
         tail = new TailContext(this);
         head = new HeadContext(this);
 
@@ -209,7 +209,7 @@ public class DefaultChannelPipeline implements ChannelPipeline {
         synchronized (this) {
             checkMultiplicity(handler);
 
-            // TODO 转换成 AbstractChannelHandlerContext 子类的实例 DefaultChannelHandlerContext, 其中属性包含 handler
+            // TODO 将handler转换成 AbstractChannelHandlerContext 子类实例 DefaultChannelHandlerContext
             newCtx = newContext(group, filterName(name, handler), handler);
 
             // TODO 添加到handler链条尾部

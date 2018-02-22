@@ -82,7 +82,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
         this.parent = parent;
         id = newId();
         unsafe = newUnsafe();
-        // TODO 每个channel初始化时都有一个默认的 DefaultChannelPipeline
+        // TODO 每个channel初始化时都有一个默认 DefaultChannelPipeline
         pipeline = newChannelPipeline();
     }
 
@@ -472,7 +472,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 return;
             }
 
-            // TODO 将channel与eventLoop绑定
+            // TODO channel注册eventLoop
             AbstractChannel.this.eventLoop = eventLoop;
 
             // TODO SingleThreadEventExecutor.inEventLoop(Thread thread)
