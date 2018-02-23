@@ -335,7 +335,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
-        // TODO 将 bossGroup中的一个 NioEventLoop 与 NioServerSocketChannel(server) 或者 NioSocketChannel(client) 绑定关系
+        // TODO 将 bossGroup中的某一个 NioEventLoop 与 NioServerSocketChannel(server) 或者 NioSocketChannel(client) 绑定关系
         // TODO group()方法返回的是 MultithreadEventLoopGroup.register(channel)--> SingleThreadEventLoop.register()-->最终调用 AbstractUnsafe.register()
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
@@ -366,6 +366,7 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
 
         // This method is invoked before channelRegistered() is triggered.  Give user handlers a chance to set up
         // the pipeline in its channelRegistered() implementation.
+        // TODO 启动与channel绑定的 NioEventLoop
         channel.eventLoop().execute(new Runnable() {
             @Override
             public void run() {

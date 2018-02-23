@@ -119,7 +119,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
                 // We do so to prevent multiple calls to initChannel(...).
                 exceptionCaught(ctx, cause);
             } finally {
-                // TODO 删除初始化时配置的handler, 通过handler() or childHandler()方法设置
+                // TODO 删除初始化时配置的handler --> ChannelInitializer
                 remove(ctx);
             }
             return true;
@@ -130,7 +130,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
     private void remove(ChannelHandlerContext ctx) {
         try {
             ChannelPipeline pipeline = ctx.pipeline();
-            // TODO 遍历pipeline的 ChannelHandlerContext 找到对应的context将其删除
+            // TODO 遍历pipeline的 ChannelHandlerContext 从head开始找到对应的context,如果存在则将其删除
             if (pipeline.context(this) != null) {
                 pipeline.remove(this);
             }

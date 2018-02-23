@@ -446,11 +446,14 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 cancelledKeys = 0;
                 needsToSelectAgain = false;
                 final int ioRatio = this.ioRatio;
+                // TODO 如果是ioRatio==100，则不考虑耗时占比
                 if (ioRatio == 100) {
                     try {
+                        // TODO 处理 connection,read,write请求
                         processSelectedKeys();
                     } finally {
                         // Ensure we always run tasks.
+                        // TODO 执行所有task
                         runAllTasks();
                     }
                 } else {

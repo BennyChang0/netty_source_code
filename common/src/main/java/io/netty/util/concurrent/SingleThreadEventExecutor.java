@@ -476,6 +476,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     @Override
     public boolean inEventLoop(Thread thread) {
+        // TODO 与 NioEventLoop 绑定的thread 和 当前thread是同一个
         return thread == this.thread;
     }
 
@@ -765,6 +766,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         if (inEventLoop) {
             addTask(task);
         } else {
+            // TODO 启动线程
             startThread();
             addTask(task);
             if (isShutdown() && removeTask(task)) {
@@ -875,6 +877,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
         executor.execute(new Runnable() {
             @Override
             public void run() {
+                // TODO 将当前thread 赋值给 this.thread 也就是将启动的线程赋值给 NioEventLoop 本地绑定线程thread
                 thread = Thread.currentThread();
                 if (interrupted) {
                     thread.interrupt();
@@ -883,6 +886,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
                 boolean success = false;
                 updateLastExecutionTime();
                 try {
+                    // TODO 调用实现类 NioEventLoop 的run()方法实现事件循环机制
                     SingleThreadEventExecutor.this.run();
                     success = true;
                 } catch (Throwable t) {
