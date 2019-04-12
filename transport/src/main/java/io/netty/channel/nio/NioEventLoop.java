@@ -354,10 +354,13 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         }
 
         // Register all channels to the new Selector.
+        // TODO 将所有的 channel 注册到新的 Selector
         int nChannels = 0;
         for (SelectionKey key: oldSelector.keys()) {
+            // TODO a --> socketChannel
             Object a = key.attachment();
             try {
+                // TODO 如果key是非法的，或者key已经注册到新的 Selector
                 if (!key.isValid() || key.channel().keyFor(newSelectorTuple.unwrappedSelector) != null) {
                     continue;
                 }
@@ -367,6 +370,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                 SelectionKey newKey = key.channel().register(newSelectorTuple.unwrappedSelector, interestOps, a);
                 if (a instanceof AbstractNioChannel) {
                     // Update SelectionKey
+                    // TODO 替换为新的 SelectionKey
                     ((AbstractNioChannel) a).selectionKey = newKey;
                 }
                 nChannels ++;
@@ -400,10 +404,10 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
     @Override
     protected void run() {
-        // TODO 死循环：NioEventLoop 事件循环的核心就是这里
+        // TODO 死循环：NioEventLoop 事件循环的核心
         for (;;) {
             try {
-                // TODO 1.通过 select/selectNow 调用查询当前是否有就绪的 IO 事件,
+                // TODO 1.通过 select/selectNow 查询当前是否有就绪的 IO 事件,
                 // TODO 当 selectStrategy.calculateStrategy() 返回的是 CONTINUE, 就结束此轮循环,进入下一轮循环;
                 // TODO 当返回的是 SELECT, 就表示任务队列为空,就调用select(Boolean);
                 switch (selectStrategy.calculateStrategy(selectNowSupplier, hasTasks())) {
@@ -468,6 +472,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                     } finally {
                         // Ensure we always run tasks.
                         final long ioTime = System.nanoTime() - ioStartTime;
+                        // TODO 执行所有task，有超时时间
                         runAllTasks(ioTime * (100 - ioRatio) / ioRatio);
                     }
                 }
@@ -544,14 +549,16 @@ public final class NioEventLoop extends SingleThreadEventLoop {
         }
 
         Iterator<SelectionKey> i = selectedKeys.iterator();
-        for (;;) {
+        for (;;) { // TODO 循环迭代每个待处理的key
             final SelectionKey k = i.next();
             final Object a = k.attachment();
             i.remove();
 
             if (a instanceof AbstractNioChannel) {
+                // TODO IO事件由netty框架负责处理
                 processSelectedKey(k, (AbstractNioChannel) a);
             } else {
+                // TODO 用户自定义处理
                 @SuppressWarnings("unchecked")
                 NioTask<SelectableChannel> task = (NioTask<SelectableChannel>) a;
                 processSelectedKey(k, task);
@@ -651,7 +658,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
             // Also check for readOps of 0 to workaround possible JDK bug which may otherwise lead
             // to a spin loop
-            // TODO 可读事件
+            // TODO 可读事件，其中readyOps == 0为对JDK Bug的处理，防止死循环
             if ((readyOps & (SelectionKey.OP_READ | SelectionKey.OP_ACCEPT)) != 0 || readyOps == 0) {
                 unsafe.read();
             }
@@ -798,6 +805,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
                             "Selector.select() returned prematurely {} times in a row; rebuilding Selector {}.",
                             selectCnt, selector);
 
+                    // TODO 重新创建 Selector 多路复用器，并将channel重新绑定
                     rebuildSelector();
                     selector = this.selector;
 

@@ -411,6 +411,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
             // Check timeout every 64 tasks because nanoTime() is relatively expensive.
             // XXX: Hard-coded value - will make it configurable if it is really a problem.
+            // TODO 每隔64个任务检查一次时间，由于nanoTime操作非常耗时，因此不能每次都检查
             if ((runTasks & 0x3F) == 0) {
                 lastExecutionTime = ScheduledFutureTask.nanoTime();
                 if (lastExecutionTime >= deadline) {
@@ -425,6 +426,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
             }
         }
 
+        // TODO 执行完所有任务后处理，继续执行尾部队列的任务
         afterRunningAllTasks();
         this.lastExecutionTime = lastExecutionTime;
         return true;
@@ -480,7 +482,7 @@ public abstract class SingleThreadEventExecutor extends AbstractScheduledEventEx
 
     @Override
     public boolean inEventLoop(Thread thread) {
-        // TODO 与 NioEventLoop 绑定的thread 和 当前thread是同一个
+        // TODO NioEventLoop 绑定的thread 和 当前thread是同一个
         return thread == this.thread;
     }
 
