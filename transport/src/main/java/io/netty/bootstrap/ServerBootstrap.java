@@ -124,7 +124,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
         if (childKey == null) {
             throw new NullPointerException("childKey");
         }
-        // 删除value为null的子属性key
+        // TODO 删除value为null的子属性key
         if (value == null) {
             childAttrs.remove(childKey);
         } else {
