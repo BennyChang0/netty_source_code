@@ -213,6 +213,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
         }
     }
 
+    // TODO 调用 Channel Active 方法
     private void invokeChannelActive() {
         if (invokeHandler()) {
             try {
@@ -486,6 +487,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
             return promise;
         }
 
+        // TODO 获取下一个handler，HeadContext
         final AbstractChannelHandlerContext next = findContextOutbound();
         EventExecutor executor = next.executor();
         if (executor.inEventLoop()) {
@@ -548,6 +550,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
     private void invokeConnect(SocketAddress remoteAddress, SocketAddress localAddress, ChannelPromise promise) {
         if (invokeHandler()) {
             try {
+                // TODO 返回HeadContext自身
                 ((ChannelOutboundHandler) handler()).connect(this, remoteAddress, localAddress, promise);
             } catch (Throwable t) {
                 notifyOutboundHandlerException(t, promise);
@@ -939,7 +942,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
 
     // TODO 遍历找到一个InboundContext
     private AbstractChannelHandlerContext findContextInbound() {
-        // HeadContext
+        // TODO HeadContext
         AbstractChannelHandlerContext ctx = this;
         do {
             ctx = ctx.next;
@@ -948,7 +951,7 @@ abstract class AbstractChannelHandlerContext extends DefaultAttributeMap
     }
 
     private AbstractChannelHandlerContext findContextOutbound() {
-        // TailContext
+        // TODO TailContext
         AbstractChannelHandlerContext ctx = this;
         do {
             ctx = ctx.prev;

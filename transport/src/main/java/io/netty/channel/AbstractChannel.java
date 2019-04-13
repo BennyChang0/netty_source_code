@@ -480,6 +480,7 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 register0(promise);
             } else {
                 try {
+                    // TODO 不在同一个线程内，启动新的线程执行register0方法
                     eventLoop.execute(new Runnable() {
                         @Override
                         public void run() {

@@ -54,7 +54,7 @@ import java.util.NoSuchElementException;
  *                                                      |
  *  +---------------------------------------------------+---------------+
  *  |                           ChannelPipeline         |               |
- *  |                                                  \|/              |
+ *  |         TaiContext                               \|/ HeadContext  |
  *  |    +---------------------+            +-----------+----------+    |
  *  |    | Inbound Handler  N  |            | Outbound Handler  1  |    |
  *  |    +----------+----------+            +-----------+----------+    |

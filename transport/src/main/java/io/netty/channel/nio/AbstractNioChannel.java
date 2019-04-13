@@ -261,6 +261,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
                     // Schedule connect timeout.
                     int connectTimeoutMillis = config().getConnectTimeoutMillis();
                     if (connectTimeoutMillis > 0) {
+                        // TODO 添加定时调度任务，在超时后将promise设置为失败
                         connectTimeoutFuture = eventLoop().schedule(new Runnable() {
                             @Override
                             public void run() {
@@ -277,6 +278,7 @@ public abstract class AbstractNioChannel extends AbstractChannel {
                     promise.addListener(new ChannelFutureListener() {
                         @Override
                         public void operationComplete(ChannelFuture future) throws Exception {
+                            // TODO 如果连接被取消，则取消超时future和关闭连接
                             if (future.isCancelled()) {
                                 if (connectTimeoutFuture != null) {
                                     connectTimeoutFuture.cancel(false);

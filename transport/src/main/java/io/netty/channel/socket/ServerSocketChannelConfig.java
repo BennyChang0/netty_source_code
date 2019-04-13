@@ -51,6 +51,7 @@ public interface ServerSocketChannelConfig extends ChannelConfig {
      * Gets the backlog value to specify when the channel binds to a local
      * address.
      */
+    // TODO 最大允许的等待连接数
     int getBacklog();
 
     /**
