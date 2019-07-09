@@ -111,6 +111,7 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
 
     @SuppressWarnings("unchecked")
     private boolean initChannel(ChannelHandlerContext ctx) throws Exception {
+        // TODO 判断是否已经初始化，返回null表示未初始化
         if (initMap.putIfAbsent(ctx, Boolean.TRUE) == null) { // Guard against re-entrance.
             try {
                 initChannel((C) ctx.channel());
@@ -130,11 +131,12 @@ public abstract class ChannelInitializer<C extends Channel> extends ChannelInbou
     private void remove(ChannelHandlerContext ctx) {
         try {
             ChannelPipeline pipeline = ctx.pipeline();
-            // TODO 遍历pipeline的 ChannelHandlerContext 从head开始找到对应的context,如果存在则将其删除
+            // TODO 将 ChannelInitializer 从ChannelPipeline中删除
             if (pipeline.context(this) != null) {
                 pipeline.remove(this);
             }
         } finally {
+            // TODO 将初始化时放入的ctx从map中删除
             initMap.remove(ctx);
         }
     }
